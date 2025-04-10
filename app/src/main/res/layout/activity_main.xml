@@ -27,20 +27,15 @@
 <!--        />-->
 
     <TextView
-        android:id="@+id/wordTextView"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Click to get a slang!"
+        android:paddingTop="24dp"
+        android:textSize="18sp"
         android:gravity="center"
-        android:text="TextView"
-        android:layout_marginBottom="50dp" /> <!-- 다음 요소와 간격 -->
-
-    <TextView
-        android:id="@+id/meaningTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="TextView"
-        android:layout_marginBottom="50dp" /> <!-- 다음 요소와 간격 -->
+        android:layout_marginBottom="50dp"
+        />
 
     <Button
         android:id="@+id/button"

@@ -45,4 +45,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("androidx.activity:activity-ktx:1.7.1") // mvvm으로 하고자 할 때, 이거 없으면 viewModelScope에 unresolved 에러뜸
+
+
+
 }

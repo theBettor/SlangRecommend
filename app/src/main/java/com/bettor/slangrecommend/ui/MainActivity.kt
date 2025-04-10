@@ -18,19 +18,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val wordTextView = findViewById<TextView>(R.id.wordTextView)
-        val meaningTextView = findViewById<TextView>(R.id.meaningTextView)
-        val btn = findViewById<Button>(R.id.button)
+        viewModel = ViewModelProvider(this)[WordViewModel::class.java]
 
-        viewModel = ViewModelProvider(this).get(WordViewModel::class.java)
+        val textView = findViewById<TextView>(R.id.textView)
+        val button = findViewById<Button>(R.id.button)
 
-        viewModel.wordLiveData.observe(this) { word ->
-            wordTextView.text = word.word
-            meaningTextView.text = word.meaning
+        viewModel.words.observe(this) { definitions ->
+            if (definitions.isNotEmpty()) {
+                val first = definitions[0]
+                textView.text = "📌 ${first.word}\n\n📝 ${first.definition}\n\n💬 ${first.example}"
+            } else {
+                textView.text = "No results found."
+            }
         }
 
-        btn.setOnClickListener {
-            viewModel.fetchRandomWord()
+        button.setOnClickListener {
+            viewModel.fetchWord("rizz") // ← 여기에 슬랭을 바꿔서 시도 가능!
         }
     }
 }
