@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 }
+
+// 🔐 local.properties에서 API 키 읽기
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+val googleApiKey = localProperties["GOOGLE_API_KEY"] as? String ?: throw GradleException("GOOGLE_API_KEY not found in local.properties")
 
 android {
     namespace = "com.bettor.slangrecommend"
@@ -16,8 +26,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-//        buildConfigField("String", "NAVER_CLIENT_ID", "\"${project.properties['NAVER_CLIENT_ID']}\"")
-//        buildConfigField("String", "NAVER_CLIENT_SECRET", getApiKey('NAVER_CLIENT_SECRET')
+        buildConfigField("String", "GOOGLE_API_KEY", "\"$googleApiKey\"")
     }
 
     buildTypes {
@@ -55,7 +64,5 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("androidx.activity:activity-ktx:1.7.1") // mvvm으로 하고자 할 때, 이거 없으면 viewModelScope에 unresolved 에러뜸
-
-
 
 }
