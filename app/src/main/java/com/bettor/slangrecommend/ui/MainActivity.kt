@@ -21,19 +21,21 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[WordViewModel::class.java]
 
         val textView = findViewById<TextView>(R.id.textView)
+        val textView2 = findViewById<TextView>(R.id.textView2)
         val button = findViewById<Button>(R.id.button)
 
         viewModel.words.observe(this) { definitions ->
             if (definitions.isNotEmpty()) {
                 val first = definitions[0]
-                textView.text = "📌 ${first.word}\n\n📝 ${first.definition}\n\n💬 ${first.example}"
+                textView.text = "📌 ${first.word}"
+                textView2.text = "뜻📝\n${first.definition}\n\n예시💬\n${first.example}"
             } else {
                 textView.text = "No results found."
             }
         }
 
         button.setOnClickListener {
-            viewModel.fetchWord("rizz") // ← 여기에 슬랭을 바꿔서 시도 가능!
+            viewModel.fetchRandomWord()
         }
     }
 }

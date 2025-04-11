@@ -14,9 +14,9 @@ class WordViewModel : ViewModel() {
     private val _words = MutableLiveData<List<UrbanDefinition>>()
     val words: LiveData<List<UrbanDefinition>> = _words
 
-    fun fetchWord(term: String) {
+    fun fetchRandomWord() {
         viewModelScope.launch {
-            val definitions = repository.getSlangDefinition(term)
+            val definitions = repository.getRandomSlangDefinition()
             _words.value = definitions
         }
     }
