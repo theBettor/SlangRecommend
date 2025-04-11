@@ -12,14 +12,14 @@ data class UrbanDefinition(
     var isTranslatedShown: Boolean = false // 현재 어떤 언어가 보이는지
 )
 
-data class PapagoResponse(
-    val message: Message
+data class TranslateResponse(
+    val data: TranslationData
 )
 
-data class Message(
-    val result: Result
+data class TranslationData(
+    val translations: List<Translation>
 )
 
-data class Result(
+data class Translation(
     val translatedText: String
 )

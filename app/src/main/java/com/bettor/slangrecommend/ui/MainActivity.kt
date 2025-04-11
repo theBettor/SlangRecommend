@@ -37,5 +37,18 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             viewModel.fetchRandomWord()
         }
+
+        textView2.setOnClickListener {
+            val item = viewModel.words.value?.firstOrNull()
+            if (item != null) {
+                viewModel.toggleTranslation(item) {
+                    textView2.text = if (item.isTranslatedShown) {
+                        "뜻📝\n${item.translated}\n\n예시💬\n${item.translated}"
+                    } else {
+                        "뜻📝\n${item.definition}\n\n예시💬\n${item.example}"
+                    }
+                }
+            }
+        }
     }
 }
