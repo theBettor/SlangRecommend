@@ -17,7 +17,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
 //        buildConfigField("String", "NAVER_CLIENT_ID", "\"${project.properties['NAVER_CLIENT_ID']}\"")
-//        buildConfigField("String", "NAVER_CLIENT_SECRET", "\"${project.properties['NAVER_CLIENT_SECRET']}\"")
+//        buildConfigField("String", "NAVER_CLIENT_SECRET", getApiKey('NAVER_CLIENT_SECRET')
     }
 
     buildTypes {
@@ -35,6 +35,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 

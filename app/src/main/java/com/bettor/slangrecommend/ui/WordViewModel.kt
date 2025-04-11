@@ -1,5 +1,6 @@
 package com.bettor.slangrecommend.ui
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,17 @@ class WordViewModel : ViewModel() {
             response.message.result.translatedText
         } catch (e: Exception) {
             "번역 실패: ${e.message}"
+        }
+    }
+
+    fun toggleTranslation(context: Context, item: UrbanDefinition, onUpdate: () -> Unit) {
+        viewModelScope.launch {
+            if (item.translated == null) {
+                val result = repository.translateWithPapago(item.definition)
+                item.translated = result
+            }
+            item.isTranslatedShown = !item.isTranslatedShown
+            onUpdate()
         }
     }
 }
