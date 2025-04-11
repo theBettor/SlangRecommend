@@ -15,6 +15,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+//        buildConfigField("String", "NAVER_CLIENT_ID", "\"${project.properties['NAVER_CLIENT_ID']}\"")
+//        buildConfigField("String", "NAVER_CLIENT_SECRET", "\"${project.properties['NAVER_CLIENT_SECRET']}\"")
     }
 
     buildTypes {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bettor.slangrecommend.data.model.UrbanDefinition
+import com.bettor.slangrecommend.data.remote.RetrofitInstance
 import com.bettor.slangrecommend.data.repository.WordRepository
 import kotlinx.coroutines.launch
 
@@ -18,6 +19,19 @@ class WordViewModel : ViewModel() {
         viewModelScope.launch {
             val definitions = repository.getRandomSlangDefinition()
             _words.value = definitions
+        }
+    }
+
+    suspend fun translateWithPapago(text: String): String {
+        return try {
+            val response = RetrofitInstance.papagoApi.translate(
+                source = "en",
+                target = "ko",
+                text = text
+            )
+            response.message.result.translatedText
+        } catch (e: Exception) {
+            "번역 실패: ${e.message}"
         }
     }
 }

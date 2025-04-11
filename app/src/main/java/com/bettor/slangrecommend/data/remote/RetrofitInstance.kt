@@ -11,4 +11,14 @@ object RetrofitInstance {
             .build()
             .create(UrbanDictionaryApi::class.java)
     }
+
+    private const val BASE_URL = "https://openapi.naver.com/"
+
+    val papagoApi: PapagoTranslateApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(PapagoTranslateApi::class.java)
+    }
 }
