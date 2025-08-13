@@ -1,6 +1,7 @@
 package com.bettor.slangrecommend.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.bettor.slangrecommend.BuildConfig
 import com.bettor.slangrecommend.R
 import kotlinx.coroutines.launch
 
@@ -19,6 +21,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.d("CHECK", "BuildConfig.GOOGLE_TRANSLATE_API_KEY(len)=" +
+                BuildConfig.GOOGLE_TRANSLATE_API_KEY.length)
 
         viewModel = ViewModelProvider(this)[WordViewModel::class.java]
 
