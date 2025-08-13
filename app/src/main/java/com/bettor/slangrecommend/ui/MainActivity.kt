@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bettor.slangrecommend.R
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,6 +38,23 @@ class MainActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             viewModel.fetchRandomWord()
+        }
+
+        textView.setOnClickListener {
+            val currentWords = viewModel.words.value
+            if (!currentWords.isNullOrEmpty()) {
+                val firstItem = currentWords[0]
+
+                // ViewModel 내부에서 코루틴 처리됨 (viewModelScope)
+                viewModel.toggleTranslation(firstItem) {
+                    // 번역 토글 후 UI 갱신
+                    if (firstItem.isTranslatedShown && firstItem.translated != null) {
+                        textView2.text = "뜻📝\n${firstItem.translated}\n\n예시💬\n${firstItem.example}"
+                    } else {
+                        textView2.text = "뜻📝\n${firstItem.definition}\n\n예시💬\n${firstItem.example}"
+                    }
+                }
+            }
         }
     }
 }

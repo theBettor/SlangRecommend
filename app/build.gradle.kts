@@ -16,8 +16,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-//        buildConfigField("String", "NAVER_CLIENT_ID", "\"${project.properties['NAVER_CLIENT_ID']}\"")
-//        buildConfigField("String", "NAVER_CLIENT_SECRET", getApiKey('NAVER_CLIENT_SECRET')
+        buildConfigField(
+            "String",
+            "GOOGLE_TRANSLATE_API_KEY",
+            "\"${System.getenv("GOOGLE_TRANSLATE_API_KEY") ?: ""}\""
+        )
     }
 
     buildTypes {

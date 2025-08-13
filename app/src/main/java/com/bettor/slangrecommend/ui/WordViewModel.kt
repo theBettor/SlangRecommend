@@ -23,23 +23,10 @@ class WordViewModel : ViewModel() {
         }
     }
 
-    suspend fun translateWithPapago(text: String): String {
-        return try {
-            val response = RetrofitInstance.papagoApi.translate(
-                source = "en",
-                target = "ko",
-                text = text
-            )
-            response.message.result.translatedText
-        } catch (e: Exception) {
-            "번역 실패: ${e.message}"
-        }
-    }
-
-    fun toggleTranslation(context: Context, item: UrbanDefinition, onUpdate: () -> Unit) {
+    fun toggleTranslation(item: UrbanDefinition, onUpdate: () -> Unit) {
         viewModelScope.launch {
             if (item.translated == null) {
-                val result = repository.translateWithPapago(item.definition)
+                val result = repository.translateWithGoogle(item.definition) // 여기만 교체
                 item.translated = result
             }
             item.isTranslatedShown = !item.isTranslatedShown
