@@ -25,11 +25,18 @@ class WordViewModel : ViewModel() {
 
     fun toggleTranslation(item: UrbanDefinition, onUpdate: () -> Unit) {
         viewModelScope.launch {
-            if (item.translated == null) {
-                val result = repository.translateWithGoogle(item.definition) // 여기만 교체
-                item.translated = result
+            if (item.translatedDefinition == null || item.translatedExample == null) {
+                val (defKo, exKo) = repository.translateDefinitionAndExample(
+                    item.definition, item.example
+                )
+                item.translatedDefinition = defKo
+                item.translatedExample = exKo
             }
             item.isTranslatedShown = !item.isTranslatedShown
+
+            // 옵저버를 다시 태우고 싶으면 이 줄도 추가 (리스트 참조 유지 시)
+            _words.value = _words.value
+
             onUpdate()
         }
     }

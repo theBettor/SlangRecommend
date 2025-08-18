@@ -49,15 +49,16 @@ class MainActivity : AppCompatActivity() {
             val currentWords = viewModel.words.value
             if (!currentWords.isNullOrEmpty()) {
                 val firstItem = currentWords[0]
-
-                // ViewModel 내부에서 코루틴 처리됨 (viewModelScope)
                 viewModel.toggleTranslation(firstItem) {
-                    // 번역 토글 후 UI 갱신
-                    if (firstItem.isTranslatedShown && firstItem.translated != null) {
-                        textView2.text = "뜻📝\n${firstItem.translated}\n\n예시💬\n${firstItem.example}"
-                    } else {
-                        textView2.text = "뜻📝\n${firstItem.definition}\n\n예시💬\n${firstItem.example}"
-                    }
+                    val (defText, exText) =
+                        if (firstItem.isTranslatedShown) {
+                            (firstItem.translatedDefinition ?: firstItem.definition) to
+                                    (firstItem.translatedExample   ?: firstItem.example)
+                        } else {
+                            firstItem.definition to firstItem.example
+                        }
+
+                    textView2.text = "뜻📝\n$defText\n\n예시💬\n$exText"
                 }
             }
         }

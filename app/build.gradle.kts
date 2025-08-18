@@ -1,3 +1,11 @@
+// app/build.gradle.kts
+import java.util.Properties  // 👈 꼭 추가
+
+val localProps = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -19,7 +27,7 @@ android {
         buildConfigField(
             "String",
             "GOOGLE_TRANSLATE_API_KEY",
-            "\"${System.getenv("GOOGLE_TRANSLATE_API_KEY") ?: ""}\""
+            "\"${localProps.getProperty("GOOGLE_TRANSLATE_API_KEY")}\""
         )
     }
 
