@@ -1,6 +1,7 @@
 package com.bettor.slangrecommend.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -8,7 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.bettor.slangrecommend.BuildConfig
 import com.bettor.slangrecommend.R
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,6 +21,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.d("CHECK", "BuildConfig.GOOGLE_TRANSLATE_API_KEY(len)=" +
+                BuildConfig.GOOGLE_TRANSLATE_API_KEY.length)
 
         viewModel = ViewModelProvider(this)[WordViewModel::class.java]
 
@@ -36,6 +43,24 @@ class MainActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             viewModel.fetchRandomWord()
+        }
+
+        textView.setOnClickListener {
+            val currentWords = viewModel.words.value
+            if (!currentWords.isNullOrEmpty()) {
+                val firstItem = currentWords[0]
+                viewModel.toggleTranslation(firstItem) {
+                    val (defText, exText) =
+                        if (firstItem.isTranslatedShown) {
+                            (firstItem.translatedDefinition ?: firstItem.definition) to
+                                    (firstItem.translatedExample   ?: firstItem.example)
+                        } else {
+                            firstItem.definition to firstItem.example
+                        }
+
+                    textView2.text = "뜻📝\n$defText\n\n예시💬\n$exText"
+                }
+            }
         }
     }
 }
