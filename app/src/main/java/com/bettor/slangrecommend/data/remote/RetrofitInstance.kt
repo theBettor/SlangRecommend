@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 object RetrofitInstance {
-    val api: UrbanDictionaryApi by lazy {
+    val urbanDictionaryApi: UrbanDictionaryApi by lazy {
         Retrofit.Builder()
             .baseUrl("https://api.urbandictionary.com/v0/")
             .addConverterFactory(GsonConverterFactory.create())

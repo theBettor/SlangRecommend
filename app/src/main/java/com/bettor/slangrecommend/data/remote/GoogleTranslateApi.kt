@@ -1,6 +1,6 @@
 package com.bettor.slangrecommend.data.remote
 
-import com.bettor.slangrecommend.data.model.GoogleTranslateResponse
+import com.bettor.slangrecommend.data.model.dto.GoogleTranslateResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST

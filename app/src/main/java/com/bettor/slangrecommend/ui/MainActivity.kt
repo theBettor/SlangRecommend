@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bettor.slangrecommend.BuildConfig
 import com.bettor.slangrecommend.R
+import com.bettor.slangrecommend.data.repository.FakeWordRepository
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -25,42 +26,33 @@ class MainActivity : AppCompatActivity() {
         Log.d("CHECK", "BuildConfig.GOOGLE_TRANSLATE_API_KEY(len)=" +
                 BuildConfig.GOOGLE_TRANSLATE_API_KEY.length)
 
-        viewModel = ViewModelProvider(this)[WordViewModel::class.java]
+        val fakeRepo = FakeWordRepository()
+        val factory = WordViewModelFactory(fakeRepo)
+
+        viewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
+
+
+//        viewModel = ViewModelProvider(this)[WordViewModel::class.java]
 
         val textView = findViewById<TextView>(R.id.textView)
         val textView2 = findViewById<TextView>(R.id.textView2)
         val button = findViewById<Button>(R.id.button)
 
-        viewModel.words.observe(this) { definitions ->
-            if (definitions.isNotEmpty()) {
-                val first = definitions[0]
-                textView.text = "📌 ${first.word}"
-                textView2.text = "뜻📝\n${first.definition}\n\n예시💬\n${first.example}"
+        viewModel.item.observe(this) { ui ->
+            if (ui == null) return@observe
+            textView.text = "📌 ${ui.word}"
+            if (ui.isTranslatedShown && ui.defKo != null) {
+                textView2.text = "뜻📝\n${ui.defKo}\n\n예시💬\n${ui.exKo ?: ""}"
             } else {
-                textView.text = "No results found."
+                textView2.text = "뜻📝\n${ui.defEn}\n\n예시💬\n${ui.exEn}"
             }
         }
 
         button.setOnClickListener {
-            viewModel.fetchRandomWord()
+            viewModel.fetchRandom()
         }
-
         textView.setOnClickListener {
-            val currentWords = viewModel.words.value
-            if (!currentWords.isNullOrEmpty()) {
-                val firstItem = currentWords[0]
-                viewModel.toggleTranslation(firstItem) {
-                    val (defText, exText) =
-                        if (firstItem.isTranslatedShown) {
-                            (firstItem.translatedDefinition ?: firstItem.definition) to
-                                    (firstItem.translatedExample   ?: firstItem.example)
-                        } else {
-                            firstItem.definition to firstItem.example
-                        }
-
-                    textView2.text = "뜻📝\n$defText\n\n예시💬\n$exText"
-                }
-            }
+            viewModel.toggleTranslation()
         }
     }
 }

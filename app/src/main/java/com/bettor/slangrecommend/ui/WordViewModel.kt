@@ -1,43 +1,68 @@
 package com.bettor.slangrecommend.ui
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.bettor.slangrecommend.data.model.UrbanDefinition
-import com.bettor.slangrecommend.data.remote.RetrofitInstance
+import com.bettor.slangrecommend.data.model.UrbanDisplay
+import com.bettor.slangrecommend.data.model.dto.UrbanDefinitionDto
 import com.bettor.slangrecommend.data.repository.WordRepository
 import kotlinx.coroutines.launch
 
-class WordViewModel : ViewModel() {
-    private val repository = WordRepository()
+class WordViewModel(
+    private val repo: WordRepository = WordRepository() // 기본은 실제 Repo
+) : ViewModel() {
 
-    private val _words = MutableLiveData<List<UrbanDefinition>>()
-    val words: LiveData<List<UrbanDefinition>> = _words
+    private val _item = MutableLiveData<UrbanDisplay?>()
+    val item: LiveData<UrbanDisplay?> = _item
 
-    fun fetchRandomWord() {
-        viewModelScope.launch {
-            val definitions = repository.getRandomSlangDefinition()
-            _words.value = definitions
-        }
+    fun fetchRandom() = viewModelScope.launch {
+        val list = repo.getRandomUrban()
+        _item.value = UrbanDisplayMapper.fromDomain(list.first())
     }
 
-    fun toggleTranslation(item: UrbanDefinition, onUpdate: () -> Unit) {
-        viewModelScope.launch {
-            if (item.translatedDefinition == null || item.translatedExample == null) {
-                val (defKo, exKo) = repository.translateDefinitionAndExample(
-                    item.definition, item.example
-                )
-                item.translatedDefinition = defKo
-                item.translatedExample = exKo
-            }
-            item.isTranslatedShown = !item.isTranslatedShown
-
-            // 옵저버를 다시 태우고 싶으면 이 줄도 추가 (리스트 참조 유지 시)
-            _words.value = _words.value
-
-            onUpdate()
+    fun toggleTranslation() = viewModelScope.launch {
+        val cur = _item.value ?: return@launch
+        if (cur.defKo == null || cur.exKo == null) {
+            val (defKo, exKo) = repo.translateDefAndEx(cur.defEn, cur.exEn)
+            _item.value = cur.copy(defKo = defKo, exKo = exKo, isTranslatedShown = !cur.isTranslatedShown)
+        } else {
+            _item.value = cur.copy(isTranslatedShown = !cur.isTranslatedShown)
         }
     }
 }
+
+class WordViewModelFactory(
+    private val repo: WordRepository
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(WordViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return WordViewModel(repo) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+//class WordViewModel : ViewModel() {
+//    private val repo = WordRepository()
+//
+//    private val _item = MutableLiveData<UrbanDisplay?>()
+//    val item: LiveData<UrbanDisplay?> = _item
+//
+//    fun fetchRandom() = viewModelScope.launch {
+//        val list = repo.getRandomUrban()
+//        val first = list.firstOrNull() ?: return@launch
+//        _item.value = UrbanDisplayMapper.fromDomain(first)
+//    }
+//
+//    fun toggleTranslation() = viewModelScope.launch {
+//        val cur = _item.value ?: return@launch
+//        if (cur.defKo == null || cur.exKo == null) {
+//            val (defKo, exKo) = repo.translateDefAndEx(cur.defEn, cur.exEn)
+//            _item.value = cur.copy(defKo = defKo, exKo = exKo, isTranslatedShown = !cur.isTranslatedShown)
+//        } else {
+//            _item.value = cur.copy(isTranslatedShown = !cur.isTranslatedShown)
+//        }
+//    }
+//}
