@@ -4,16 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.bettor.slangrecommend.BuildConfig
 import com.bettor.slangrecommend.R
-import com.bettor.slangrecommend.data.repository.FakeWordRepository
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,13 +20,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("CHECK", "BuildConfig.GOOGLE_TRANSLATE_API_KEY(len)=" +
                 BuildConfig.GOOGLE_TRANSLATE_API_KEY.length)
 
-        val fakeRepo = FakeWordRepository()
-        val factory = WordViewModelFactory(fakeRepo)
-
-        viewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
-
-
-//        viewModel = ViewModelProvider(this)[WordViewModel::class.java]
+        viewModel = ViewModelProvider(this)[WordViewModel::class.java]
 
         val textView = findViewById<TextView>(R.id.textView)
         val textView2 = findViewById<TextView>(R.id.textView2)
